@@ -143,7 +143,7 @@ router.put("/:id", (req,res)=>{
     let success = false
     const {numeroFactura, fechaFactura, cedulaCliente, vendedor, estado,
         subtotal, iva, total, articulos}= req.body;
-    // try {
+    try {
         success = false
         sql= "DELETE FROM FACTURA WHERE numeroFactura = ?" ;
         db.run(sql, [id], (err) => {
@@ -205,12 +205,12 @@ router.put("/:id", (req,res)=>{
                 });
             }
         });
-    // } catch (error) {
-    //     return res.json({
-    //         status:400,
-    //         success:false,
-    //     })
-    // }
+    } catch (error) {
+        return res.json({
+            status:400,
+            success:false,
+        })
+    }
 })
 
 module.exports = router;
