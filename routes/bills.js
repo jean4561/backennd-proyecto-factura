@@ -10,23 +10,18 @@ const db = new sqlite.Database("./quote.db",sqlite.OPEN_READWRITE,(err)=>{
 const router = express.Router();
 
 router.post("/", (req,res)=>{
-    const {numeroFactura, fecha, cedulaCliente, vendedor, estado,
+    const {numeroFactura, fechaFactura, cedulaCliente, vendedor, estado,
         subtotal, iva, total, articulos}= req.body;
     try {
-        sql= "INSERT INTO FACTURA(numeroFactura, fecha, cedulaCliente, subtotal, iva, total) VALUES (?,?,?,?,?,?)" ;
+        sql= "INSERT INTO FACTURA(numeroFactura, fechaFactura, cedulaCliente, subtotal, iva, total) VALUES (?,?,?,?,?,?)" ;
         let success = false
-        db.run(sql, [numeroFactura, fecha, cedulaCliente, subtotal, iva, total],(err) => {
+        db.run(sql, [numeroFactura, fechaFactura, cedulaCliente, subtotal, iva, total],(err) => {
             if (err){
                 console.log('err', err);
                 console.log('err')
-                // return res.json({status:300,success:false, error:err});
             } else {
                 success = true
                 console.log('succ');
-                // return res.json({
-                //     status:200,
-                //     success:true,
-                // });
             }
         });
 
@@ -78,11 +73,12 @@ router.get("/", (req,res)=>{
                             descripcion: row.descripcion,
                             precio: row.precio,
                             cantidad: row.cantidad,
+                            existencia: row.existencia,
                         });
                     } else {
                         facturas.push({
                             numeroFactura: row.numeroFactura,
-                            fecha: row.fecha,
+                            fechaFactura: row.fechaFactura,
                             cedulaCliente: row.cedulaCliente,
                             subtotal: row.subtotal,
                             iva: row.iva,
@@ -92,6 +88,7 @@ router.get("/", (req,res)=>{
                                 descripcion: row.descripcion,
                                 precio: row.precio,
                                 cantidad: row.cantidad,
+                                existencia: row.existencia,
                             }],
                         });
                     }
@@ -144,18 +141,27 @@ router.delete("/:id", (req,res)=>{
 router.put("/:id", (req,res)=>{
     const { id } = req.params;
     let success = false
-    const {numeroFactura, fecha, cedulaCliente, vendedor, estado,
+    const {numeroFactura, fechaFactura, cedulaCliente, vendedor, estado,
         subtotal, iva, total, articulos}= req.body;
     // try {
         success = false
         sql= "DELETE FROM FACTURA WHERE numeroFactura = ?" ;
         db.run(sql, [id], (err) => {
-            success = true
+            if (err){
+                console.log('err', err);
+            } else {
+                console.log('succ');
+            }
         });
 
         sql2= "DELETE FROM COMPRAS WHERE numeroFactura = ?" ;
         db.run(sql2, [id], (err) => {
             success = true
+            if (err){
+                console.log('err', err);
+            } else {
+                console.log('succ');
+            }
             // if (err){
             //     return res.json({status:300,success:false, error:err});
             // } else {
@@ -166,8 +172,8 @@ router.put("/:id", (req,res)=>{
             // }
         });
 
-        sql3= "INSERT INTO FACTURA(numeroFactura, fecha, cedulaCliente, subtotal, iva, total) VALUES (?,?,?,?,?,?)" ;
-        db.run(sql3, [numeroFactura, fecha, cedulaCliente, subtotal, iva, total],(err) => {
+        sql3= "INSERT INTO FACTURA(numeroFactura, fechaFactura, cedulaCliente, subtotal, iva, total) VALUES (?,?,?,?,?,?)" ;
+        db.run(sql3, [numeroFactura, fechaFactura, cedulaCliente, subtotal, iva, total],(err) => {
             if (err){
                 console.log('err', err);
                 console.log('err')

@@ -1,7 +1,12 @@
 const express= require("express");
 const bodyParser= require("body-parser");
 const { listen } = require("express/lib/application");
+const cors = require('cors');
 const app= express();
+
+app.use(cors({
+    origin: '*'
+}));
 
 const url = require('url');
 
